@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Arduino Uno Rev3 Emulator</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+    </style>
+  </head>
+  <body>
+    <h1>Arduino Uno Rev3 Emulator</h1>
+    
+    <div class="app-container">
+      <!-- Arduino Board Visualization -->
+      <div class="board-section">
+        <h2>Arduino Uno Rev3</h2>
+        <div class="board-leds">
+          <wokwi-led color="red" label="Power"></wokwi-led>
+          <wokwi-led color="green" label="Pin 13 (Built-in LED)"></wokwi-led>
+        </div>
+      </div>
+
+      <!-- Pin State Table -->
+      <div class="pins-section">
+        <h2>Pin States</h2>
+        <table class="pins-table">
+          <thead>
+            <tr>
+              <th>Pin</th>
+              <th>Mode</th>
+              <th>State</th>
+              <th>Control</th>
+            </tr>
+          </thead>
+          <tbody id="pins-table-body">
+            <!-- Digital pins 0-13 -->
+            <!-- Will be populated by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Code Editor and Controls -->
+      <div class="editor-section">
+        <div class="toolbar">
+          <button id="run-button">Run</button>
+          <button id="stop-button" disabled>Stop</button>
+          <button id="load-hex-button">Load HEX File</button>
+          <input type="file" id="hex-file-input" accept=".hex" style="display: none;">
+          <button id="example-button">Load Example</button>
+          <div class="spacer"></div>
+          <div id="status-label"></div>
+        </div>
+        
+        <div class="code-editor"></div>
+        
+        <div class="compiler-output">
+          <h3>Compiler Output</h3>
+          <pre id="compiler-output-text"></pre>
+        </div>
+      </div>
+
+      <!-- Serial Monitor -->
+      <div class="serial-section">
+        <h2>Serial Monitor</h2>
+        <div class="serial-controls">
+          <button id="clear-serial-button">Clear</button>
+          <select id="baud-rate-select">
+            <option value="9600">9600</option>
+            <option value="115200" selected>115200</option>
+          </select>
+          <span>baud</span>
+        </div>
+        <div class="serial-output">
+          <pre id="serial-output-text"></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monaco Editor -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/loader.js"></script>
+    <script type="module" src="./src/index.ts"></script>
+  </body>
+</html>
