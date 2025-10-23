@@ -9,8 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@wokwi/elements": "^0.16.2",
     "avr8js": "^0.20.1",
-    "@wokwi/elements": "^0.16.2"
+    "monaco-editor": "^0.54.0"
   },
   "devDependencies": {
     "typescript": "^4.9.4",

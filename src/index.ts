@@ -9,6 +9,7 @@ import { CPUPerformance } from './cpu-performance';
 import { AVRRunner } from './execute';
 import { formatTime } from './format-time';
 import './index.css';
+import * as monaco from 'monaco-editor';
 
 // Pin configuration for Arduino Uno Rev3
 interface PinInfo {
@@ -20,7 +21,7 @@ interface PinInfo {
   portPin?: number;
 }
 
-let editor: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+let editor: monaco.editor.IStandaloneCodeEditor;
 let runner: AVRRunner | null = null;
 
 // Example Arduino code
@@ -80,61 +81,13 @@ const pinStates: PinInfo[] = [
   { pin: 19, name: 'A5 (SCL)', mode: 'ANALOG', state: 'LOW', port: 'C', portPin: 5 },
 ];
 
-// Load Monaco Editor
-declare const window: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-declare const monaco: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-
-// Create a simple textarea fallback if Monaco fails to load
-function createSimpleEditor() {
-  const editorElement = document.querySelector('.code-editor') as HTMLElement;
-  if (editorElement) {
-    editorElement.innerHTML = `
-      <textarea 
-        id="code-textarea" 
-        style="width: 100%; height: 100%; border: none; padding: 12px; font-family: monospace; font-size: 14px; resize: none;"
-        placeholder="Loading editor..."
-      >${EXAMPLE_CODE}</textarea>
-    `;
-    
-    const textarea = document.querySelector('#code-textarea') as HTMLTextAreaElement;
-    editor = {
-      getValue: () => textarea.value,
-      setValue: (value: string) => { textarea.value = value; },
-      getModel: () => ({ getValue: () => textarea.value })
-    };
-  }
-}
-
-// Try to load Monaco Editor, fallback to simple editor
-if (typeof window !== 'undefined' && window.require) {
-  try {
-    window.require.config({
-      paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs' },
-    });
-
-    window.require(['vs/editor/editor.main'], () => {
-      try {
-        editor = monaco.editor.create(document.querySelector('.code-editor'), {
-          value: EXAMPLE_CODE,
-          language: 'cpp',
-          minimap: { enabled: false },
-          theme: 'vs-dark',
-        });
-      } catch (err) {
-        console.warn('Monaco editor failed to initialize, using fallback');
-        createSimpleEditor();
-      }
-    }, () => {
-      console.warn('Monaco editor failed to load, using fallback');
-      createSimpleEditor();
-    });
-  } catch (err) {
-    console.warn('Monaco loader not available, using fallback');
-    createSimpleEditor();
-  }
-} else {
-  createSimpleEditor();
-}
+// Initialize Monaco Editor
+editor = monaco.editor.create(document.querySelector('.code-editor')!, {
+  value: EXAMPLE_CODE,
+  language: 'cpp',
+  minimap: { enabled: false },
+  theme: 'vs',
+});
 
 // Set up UI elements
 const powerLed = document.querySelector<LEDElement>('wokwi-led[label="Power"]');
@@ -293,11 +246,6 @@ function updatePortPins(port: 'B' | 'C' | 'D', portObj: any) {
 
 // Compile and run the code
 async function compileAndRun() {
-  if (!editor) {
-    alert('Editor not ready yet');
-    return;
-  }
-
   if (builtinLed) builtinLed.value = false;
 
   runButton.disabled = true;
@@ -308,7 +256,7 @@ async function compileAndRun() {
   
   try {
     statusLabel.textContent = 'Compiling...';
-    const result = await buildHex(editor.getModel().getValue());
+    const result = await buildHex(editor.getValue());
     compilerOutputText.textContent = result.stderr || result.stdout;
     
     if (result.hex) {
@@ -347,9 +295,7 @@ function stopCode() {
 
 // Load example code
 function loadExample() {
-  if (editor) {
-    editor.setValue(EXAMPLE_CODE);
-  }
+  editor.setValue(EXAMPLE_CODE);
 }
 
 // Load HEX file
@@ -392,11 +338,6 @@ clearSerialButton.addEventListener('click', clearSerial);
 function initializeApp() {
   initializePinTable();
   statusLabel.textContent = 'Ready';
-  
-  // Ensure editor is ready or create fallback
-  if (!editor) {
-    createSimpleEditor();
-  }
 }
 
 // Initialize when DOM is ready
