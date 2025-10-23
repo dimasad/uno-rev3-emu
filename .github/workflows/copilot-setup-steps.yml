@@ -1,0 +1,22 @@
+name: Copilot Setup Steps
+
+on:
+  workflow_call:
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: npm
+
+      - name: Install Arduino CLI
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
+          export PATH="$PATH:$PWD/bin"
+          arduino-cli config init
+          arduino-cli core update-index
+          arduino-cli core install arduino:avr
