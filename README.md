@@ -10,7 +10,6 @@ Simple emulator for the Arduino Uno Rev3 microcontroller board built with avr8js
 - **Code Editor**: Built-in code editor with Arduino C++ syntax support
 - **Compilation Support**: Compile Arduino sketches using https://hexi.wokwi.com
 - **HEX File Loading**: Load and run pre-compiled HEX files
-- **Visual Indicators**: LED indicators for power and pin 13 (built-in LED)
 
 ## Quick Start
 

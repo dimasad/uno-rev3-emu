@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Arduino Uno Rev3 Emulator
 
-import '@wokwi/elements';
-import { LEDElement } from '@wokwi/elements';
 import { PinState } from 'avr8js';
 import { buildHex } from './compile';
 import { CPUPerformance } from './cpu-performance';
@@ -82,15 +80,6 @@ const pinStates: PinInfo[] = [
   { pin: 18, name: 'A4 (SDA)', mode: 'ANALOG', state: 'LOW', port: 'C', portPin: 4 },
   { pin: 19, name: 'A5 (SCL)', mode: 'ANALOG', state: 'LOW', port: 'C', portPin: 5 },
 ];
-
-// Set up UI elements
-const powerLed = document.querySelector<LEDElement>('wokwi-led[label="Power"]');
-const builtinLed = document.querySelector<LEDElement>('wokwi-led[label="Pin 13 (Built-in LED)"]');
-
-// Initialize power LED as always on
-if (powerLed) {
-  powerLed.value = true;
-}
 
 // Set up buttons and controls
 const runButton = document.querySelector('#run-button') as HTMLButtonElement;
@@ -228,11 +217,6 @@ function updatePortPins(port: 'B' | 'C' | 'D', portObj: any) {
       // Update pin state
       pinInfo.state = pinState === PinState.High ? 'HIGH' : 'LOW';
       
-      // Update built-in LED
-      if (pinInfo.pin === 13 && builtinLed) {
-        builtinLed.value = pinState === PinState.High;
-      }
-      
       updatePinDisplay(index);
     }
   });
@@ -240,8 +224,6 @@ function updatePortPins(port: 'B' | 'C' | 'D', portObj: any) {
 
 // Compile and run the code
 async function compileAndRun() {
-  if (builtinLed) builtinLed.value = false;
-
   runButton.disabled = true;
   exampleButton.disabled = true;
 
@@ -283,7 +265,6 @@ function stopCode() {
     runner = null;
   }
   
-  if (builtinLed) builtinLed.value = false;
   statusLabel.textContent = 'Stopped';
 }
 
