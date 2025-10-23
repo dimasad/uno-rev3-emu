@@ -34,6 +34,24 @@ jobs:
       - name: Install deps
         run: npm ci
 
+      - name: Install Arduino CLI
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
+          export PATH="$PATH:$PWD/bin"
+          arduino-cli config init
+          arduino-cli core update-index
+          arduino-cli core install arduino:avr
+
+      - name: Compile example sketch
+        run: |
+          export PATH="$PATH:$PWD/bin"
+          mkdir -p /tmp/example
+          cp example.ino /tmp/example/example.ino
+          mkdir -p public
+          arduino-cli compile --fqbn arduino:avr:uno /tmp/example --output-dir /tmp/example-build
+          cp /tmp/example-build/example.ino.hex public/example.hex
+          cp example.ino public/example.ino
+
       - name: Build
         run: npm run build
 
