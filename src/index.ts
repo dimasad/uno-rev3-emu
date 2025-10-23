@@ -25,6 +25,8 @@ let editor: monaco.editor.IStandaloneCodeEditor;
 let runner: AVRRunner | null = null;
 
 // Example Arduino code
+
+// Example Arduino code
 const EXAMPLE_CODE = `
 // Arduino Uno Rev3 Example
 // Blink the built-in LED and send serial messages
@@ -80,14 +82,6 @@ const pinStates: PinInfo[] = [
   { pin: 18, name: 'A4 (SDA)', mode: 'ANALOG', state: 'LOW', port: 'C', portPin: 4 },
   { pin: 19, name: 'A5 (SCL)', mode: 'ANALOG', state: 'LOW', port: 'C', portPin: 5 },
 ];
-
-// Initialize Monaco Editor
-editor = monaco.editor.create(document.querySelector('.code-editor')!, {
-  value: EXAMPLE_CODE,
-  language: 'cpp',
-  minimap: { enabled: false },
-  theme: 'vs',
-});
 
 // Set up UI elements
 const powerLed = document.querySelector<LEDElement>('wokwi-led[label="Power"]');
@@ -336,6 +330,14 @@ clearSerialButton.addEventListener('click', clearSerial);
 
 // Initialize the application
 function initializeApp() {
+  // Initialize Monaco Editor
+  editor = monaco.editor.create(document.querySelector('.code-editor')!, {
+    value: EXAMPLE_CODE,
+    language: 'cpp',
+    minimap: { enabled: false },
+    theme: 'vs',
+  });
+
   initializePinTable();
   statusLabel.textContent = 'Ready';
 }
