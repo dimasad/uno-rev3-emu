@@ -35,29 +35,6 @@ h3 {
   gap: 24px;
 }
 
-/* Board Section */
-.board-section {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.board-leds {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background: #2c3e50;
-  border-radius: 8px;
-  margin-top: 16px;
-}
-
-.board-leds wokwi-led {
-  margin: 0 8px;
-}
-
 /* Pin Table Section */
 .pins-section {
   background: white;
@@ -79,6 +56,30 @@ h3 {
   padding: 8px 12px;
   text-align: left;
   border-bottom: 1px solid #ddd;
+}
+
+.pins-table th:nth-child(1),
+.pins-table td:nth-child(1) {
+  width: 25%;
+  min-width: 100px;
+}
+
+.pins-table th:nth-child(2),
+.pins-table td:nth-child(2) {
+  width: 25%;
+  min-width: 120px;
+}
+
+.pins-table th:nth-child(3),
+.pins-table td:nth-child(3) {
+  width: 25%;
+  min-width: 80px;
+}
+
+.pins-table th:nth-child(4),
+.pins-table td:nth-child(4) {
+  width: 25%;
+  min-width: 80px;
 }
 
 .pins-table th {

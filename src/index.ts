@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Arduino Uno Rev3 Emulator
 
-import '@wokwi/elements';
-import { LEDElement } from '@wokwi/elements';
 import { PinState } from 'avr8js';
 import { buildHex } from './compile';
 import { CPUPerformance } from './cpu-performance';
@@ -24,38 +22,8 @@ interface PinInfo {
 let editor: monaco.editor.IStandaloneCodeEditor;
 let runner: AVRRunner | null = null;
 
-// Example Arduino code
-
-// Example Arduino code
-const EXAMPLE_CODE = `
-// Arduino Uno Rev3 Example
-// Blink the built-in LED and send serial messages
-
-void setup() {
-  Serial.begin(115200);
-  pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(2, INPUT_PULLUP);
-  pinMode(3, OUTPUT);
-  Serial.println("Arduino Uno Rev3 Emulator Started!");
-}
-
-void loop() {
-  // Read digital pin 2
-  int buttonState = digitalRead(2);
-  
-  // Blink LED
-  digitalWrite(LED_BUILTIN, HIGH);
-  digitalWrite(3, HIGH);
-  Serial.print("LED ON, Button: ");
-  Serial.println(buttonState);
-  delay(500);
-  
-  digitalWrite(LED_BUILTIN, LOW);
-  digitalWrite(3, LOW);
-  Serial.print("LED OFF, Button: ");
-  Serial.println(buttonState);
-  delay(500);
-}`.trim();
+// Example Arduino code - will be loaded from external file
+let EXAMPLE_CODE = '';
 
 // Initialize pin state
 const pinStates: PinInfo[] = [
@@ -82,15 +50,6 @@ const pinStates: PinInfo[] = [
   { pin: 18, name: 'A4 (SDA)', mode: 'ANALOG', state: 'LOW', port: 'C', portPin: 4 },
   { pin: 19, name: 'A5 (SCL)', mode: 'ANALOG', state: 'LOW', port: 'C', portPin: 5 },
 ];
-
-// Set up UI elements
-const powerLed = document.querySelector<LEDElement>('wokwi-led[label="Power"]');
-const builtinLed = document.querySelector<LEDElement>('wokwi-led[label="Pin 13 (Built-in LED)"]');
-
-// Initialize power LED as always on
-if (powerLed) {
-  powerLed.value = true;
-}
 
 // Set up buttons and controls
 const runButton = document.querySelector('#run-button') as HTMLButtonElement;
@@ -228,11 +187,6 @@ function updatePortPins(port: 'B' | 'C' | 'D', portObj: any) {
       // Update pin state
       pinInfo.state = pinState === PinState.High ? 'HIGH' : 'LOW';
       
-      // Update built-in LED
-      if (pinInfo.pin === 13 && builtinLed) {
-        builtinLed.value = pinState === PinState.High;
-      }
-      
       updatePinDisplay(index);
     }
   });
@@ -240,8 +194,6 @@ function updatePortPins(port: 'B' | 'C' | 'D', portObj: any) {
 
 // Compile and run the code
 async function compileAndRun() {
-  if (builtinLed) builtinLed.value = false;
-
   runButton.disabled = true;
   exampleButton.disabled = true;
 
@@ -249,8 +201,28 @@ async function compileAndRun() {
   compilerOutputText.textContent = '';
   
   try {
+    const code = editor.getValue();
+    
+    // Check if code matches the default example
+    if (code.trim() === EXAMPLE_CODE.trim()) {
+      statusLabel.textContent = 'Loading precompiled example...';
+      try {
+        const response = await fetch('example.hex');
+        if (response.ok) {
+          const hex = await response.text();
+          compilerOutputText.textContent = 'Using precompiled HEX file\nProgram running...';
+          stopButton.disabled = false;
+          executeProgram(hex);
+          return;
+        }
+      } catch (err) {
+        console.warn('Failed to load precompiled HEX, falling back to compilation:', err);
+      }
+    }
+    
+    // Compile using hexi.wokwi.com
     statusLabel.textContent = 'Compiling...';
-    const result = await buildHex(editor.getValue());
+    const result = await buildHex(code);
     compilerOutputText.textContent = result.stderr || result.stdout;
     
     if (result.hex) {
@@ -283,7 +255,6 @@ function stopCode() {
     runner = null;
   }
   
-  if (builtinLed) builtinLed.value = false;
   statusLabel.textContent = 'Stopped';
 }
 
@@ -328,8 +299,52 @@ hexFileInput.addEventListener('change', handleHexFile);
 exampleButton.addEventListener('click', loadExample);
 clearSerialButton.addEventListener('click', clearSerial);
 
+// Load example code from external file
+async function loadExampleCode() {
+  try {
+    const response = await fetch('example.ino');
+    if (response.ok) {
+      EXAMPLE_CODE = await response.text();
+    }
+  } catch (err) {
+    console.error('Failed to load example code:', err);
+    // Fallback to inline code if file can't be loaded
+    EXAMPLE_CODE = `// Arduino Uno Rev3 Example
+// Blink the built-in LED and send serial messages
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(2, INPUT_PULLUP);
+  pinMode(3, OUTPUT);
+  Serial.println("Arduino Uno Rev3 Emulator Started!");
+}
+
+void loop() {
+  // Read digital pin 2
+  int buttonState = digitalRead(2);
+  
+  // Blink LED
+  digitalWrite(LED_BUILTIN, HIGH);
+  digitalWrite(3, HIGH);
+  Serial.print("LED ON, Button: ");
+  Serial.println(buttonState);
+  delay(500);
+  
+  digitalWrite(LED_BUILTIN, LOW);
+  digitalWrite(3, LOW);
+  Serial.print("LED OFF, Button: ");
+  Serial.println(buttonState);
+  delay(500);
+}`;
+  }
+}
+
 // Initialize the application
-function initializeApp() {
+async function initializeApp() {
+  // Load example code first
+  await loadExampleCode();
+  
   // Initialize Monaco Editor
   editor = monaco.editor.create(document.querySelector('.code-editor')!, {
     value: EXAMPLE_CODE,
