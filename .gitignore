@@ -47,6 +47,11 @@ bin/
 # Test artifacts
 tests/hex/
 
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
+
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
 
