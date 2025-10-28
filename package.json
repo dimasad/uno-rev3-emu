@@ -6,7 +6,10 @@
   "scripts": {
     "start": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui"
   },
   "dependencies": {
     "@wokwi/elements": "^0.16.2",
@@ -14,8 +17,13 @@
     "monaco-editor": "^0.54.0"
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "@vitest/ui": "^4.0.4",
+    "happy-dom": "^20.0.8",
+    "jsdom": "^27.0.1",
     "typescript": "^4.9.4",
-    "vite": "^6.0.0"
+    "vite": "^6.0.0",
+    "vitest": "^4.0.4"
   },
   "type": "module"
 }
