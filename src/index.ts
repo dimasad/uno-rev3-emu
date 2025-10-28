@@ -28,27 +28,27 @@ let EXAMPLE_CODE = '';
 // Initialize pin state
 const pinStates: PinInfo[] = [
   // Digital pins 0-13
-  { pin: 0, name: 'D0 (RX)', mode: 'SERIAL', state: 'FLOATING', port: 'D', portPin: 0 },
-  { pin: 1, name: 'D1 (TX)', mode: 'SERIAL', state: 'FLOATING', port: 'D', portPin: 1 },
+  { pin: 0, name: 'D0 (RX)', mode: 'INPUT', state: 'LOW', port: 'D', portPin: 0 },
+  { pin: 1, name: 'D1 (TX)', mode: 'INPUT', state: 'LOW', port: 'D', portPin: 1 },
   { pin: 2, name: 'D2', mode: 'INPUT', state: 'LOW', port: 'D', portPin: 2 },
-  { pin: 3, name: 'D3 (PWM)', mode: 'OUTPUT', state: 'LOW', port: 'D', portPin: 3 },
+  { pin: 3, name: 'D3 (PWM)', mode: 'INPUT', state: 'LOW', port: 'D', portPin: 3 },
   { pin: 4, name: 'D4', mode: 'INPUT', state: 'LOW', port: 'D', portPin: 4 },
-  { pin: 5, name: 'D5 (PWM)', mode: 'OUTPUT', state: 'LOW', port: 'D', portPin: 5 },
-  { pin: 6, name: 'D6 (PWM)', mode: 'OUTPUT', state: 'LOW', port: 'D', portPin: 6 },
+  { pin: 5, name: 'D5 (PWM)', mode: 'INPUT', state: 'LOW', port: 'D', portPin: 5 },
+  { pin: 6, name: 'D6 (PWM)', mode: 'INPUT', state: 'LOW', port: 'D', portPin: 6 },
   { pin: 7, name: 'D7', mode: 'INPUT', state: 'LOW', port: 'D', portPin: 7 },
   { pin: 8, name: 'D8', mode: 'INPUT', state: 'LOW', port: 'B', portPin: 0 },
-  { pin: 9, name: 'D9 (PWM)', mode: 'OUTPUT', state: 'LOW', port: 'B', portPin: 1 },
-  { pin: 10, name: 'D10 (PWM)', mode: 'OUTPUT', state: 'LOW', port: 'B', portPin: 2 },
-  { pin: 11, name: 'D11 (PWM)', mode: 'OUTPUT', state: 'LOW', port: 'B', portPin: 3 },
-  { pin: 12, name: 'D12', mode: 'OUTPUT', state: 'LOW', port: 'B', portPin: 4 },
-  { pin: 13, name: 'D13 (LED)', mode: 'OUTPUT', state: 'LOW', port: 'B', portPin: 5 },
+  { pin: 9, name: 'D9 (PWM)', mode: 'INPUT', state: 'LOW', port: 'B', portPin: 1 },
+  { pin: 10, name: 'D10 (PWM)', mode: 'INPUT', state: 'LOW', port: 'B', portPin: 2 },
+  { pin: 11, name: 'D11 (PWM)', mode: 'INPUT', state: 'LOW', port: 'B', portPin: 3 },
+  { pin: 12, name: 'D12', mode: 'INPUT', state: 'LOW', port: 'B', portPin: 4 },
+  { pin: 13, name: 'D13 (LED)', mode: 'INPUT', state: 'LOW', port: 'B', portPin: 5 },
   // Analog pins A0-A5
-  { pin: 14, name: 'A0', mode: 'ANALOG', state: 'LOW', port: 'C', portPin: 0 },
-  { pin: 15, name: 'A1', mode: 'ANALOG', state: 'LOW', port: 'C', portPin: 1 },
-  { pin: 16, name: 'A2', mode: 'ANALOG', state: 'LOW', port: 'C', portPin: 2 },
-  { pin: 17, name: 'A3', mode: 'ANALOG', state: 'LOW', port: 'C', portPin: 3 },
-  { pin: 18, name: 'A4 (SDA)', mode: 'ANALOG', state: 'LOW', port: 'C', portPin: 4 },
-  { pin: 19, name: 'A5 (SCL)', mode: 'ANALOG', state: 'LOW', port: 'C', portPin: 5 },
+  { pin: 14, name: 'A0', mode: 'INPUT', state: 'LOW', port: 'C', portPin: 0 },
+  { pin: 15, name: 'A1', mode: 'INPUT', state: 'LOW', port: 'C', portPin: 1 },
+  { pin: 16, name: 'A2', mode: 'INPUT', state: 'LOW', port: 'C', portPin: 2 },
+  { pin: 17, name: 'A3', mode: 'INPUT', state: 'LOW', port: 'C', portPin: 3 },
+  { pin: 18, name: 'A4 (SDA)', mode: 'INPUT', state: 'LOW', port: 'C', portPin: 4 },
+  { pin: 19, name: 'A5 (SCL)', mode: 'INPUT', state: 'LOW', port: 'C', portPin: 5 },
 ];
 
 // Set up buttons and controls

@@ -80,6 +80,49 @@ To build for production:
 npm run build
 ```
 
+## Testing
+
+This project uses Vitest for automated testing. To run tests:
+
+```bash
+npm test
+```
+
+For development with automatic test re-running:
+```bash
+npm run test:watch
+```
+
+### Test Prerequisites
+
+Tests require compiled Arduino sketches. To set up testing for the first time:
+
+1. Install Arduino CLI:
+   ```bash
+   curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
+   export PATH="$PATH:./bin"
+   ```
+
+2. Setup Arduino CLI:
+   ```bash
+   arduino-cli config init
+   arduino-cli core update-index
+   arduino-cli core install arduino:avr
+   ```
+
+3. Compile test sketches:
+   ```bash
+   chmod +x tests/compile-sketches.sh
+   ./tests/compile-sketches.sh
+   ```
+
+The test suite includes comprehensive pin mode detection tests covering:
+- Digital pins (INPUT, OUTPUT, INPUT_PULLUP modes)
+- Analog pins (all modes)
+- PWM functionality
+- Serial (UART) communication
+- I2C (Wire) communication
+
 ## Browser Compatibility
 
 - Modern browsers with ES2020 support
