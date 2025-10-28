@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Arduino Uno Rev3 Emulator
 
-import { PinState } from 'avr8js';
+import { PinState, portBConfig, portCConfig, portDConfig } from 'avr8js';
 import { buildHex } from './compile';
 import { CPUPerformance } from './cpu-performance';
 import { AVRRunner } from './execute';
@@ -125,6 +125,7 @@ function updatePinDisplay(pinNumber: number) {
   if (row) {
     const stateCell = row.querySelector('.pin-state') as HTMLElement;
     const modeCell = row.querySelector('.pin-mode') as HTMLElement;
+    const controlCell = row.querySelector('td:last-child') as HTMLElement;
     
     if (stateCell) {
       stateCell.textContent = pinInfo.state;
@@ -133,6 +134,22 @@ function updatePinDisplay(pinNumber: number) {
     
     if (modeCell) {
       modeCell.textContent = pinInfo.mode;
+    }
+    
+    // Update control column based on mode
+    if (controlCell) {
+      if (pinInfo.mode === 'INPUT' || pinInfo.mode === 'INPUT_PULLUP') {
+        if (!controlCell.querySelector('.pin-toggle')) {
+          controlCell.innerHTML = `<button class="pin-toggle" data-pin="${pinInfo.pin}">Toggle</button>`;
+          const button = controlCell.querySelector('.pin-toggle');
+          button?.addEventListener('click', (e) => {
+            const pinNum = parseInt((e.target as HTMLElement).dataset.pin || '0');
+            togglePin(pinNum);
+          });
+        }
+      } else {
+        controlCell.textContent = '-';
+      }
     }
   }
 }
@@ -171,16 +188,26 @@ function executeProgram(hex: string) {
 
 // Update pin states from port changes
 function updatePortPins(port: 'B' | 'C' | 'D', portObj: any) {
+  if (!runner) return;
+  
+  // Get the port configuration to access register addresses
+  const portConfig = port === 'B' ? portBConfig :
+                     port === 'C' ? portCConfig : portDConfig;
+  
   pinStates.forEach((pinInfo, index) => {
     if (pinInfo.port === port && pinInfo.portPin !== undefined) {
       const pinState = portObj.pinState(pinInfo.portPin);
       
+      // Read DDR and PORT registers directly from CPU data memory
+      const ddrValue = runner!.cpu.data[portConfig.DDR];
+      const portValue = runner!.cpu.data[portConfig.PORT];
+      
       // Update pin mode based on DDR register
-      const ddrBit = portObj.ddr & (1 << pinInfo.portPin);
+      const ddrBit = ddrValue & (1 << pinInfo.portPin);
       if (ddrBit) {
-        pinInfo.mode = pinInfo.name.includes('PWM') ? 'PWM' : 'OUTPUT';
+        pinInfo.mode = 'OUTPUT';
       } else {
-        const portBit = portObj.portValue & (1 << pinInfo.portPin);
+        const portBit = portValue & (1 << pinInfo.portPin);
         pinInfo.mode = portBit ? 'INPUT_PULLUP' : 'INPUT';
       }
       
